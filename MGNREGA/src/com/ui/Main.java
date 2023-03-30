@@ -1,6 +1,12 @@
 package com.ui;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import com.dao.BDOimp;
+import com.dao.BDOintr;
+import com.dao.GPMimp;
+import com.dao.GPMintr;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,16 +15,16 @@ public class Main {
 		
 		System.out.println("-=-=-=-=-= Welcome to MGNREGA =-=-=-=-=-");
 		do {
-			System.out.println("1. Login BDO \n2. Login GPM \n0. Exit");
+			System.out.println("\n1. Login BDO \n2. Login GPM \n0. Exit");
 			System.out.print("Enter your selection ");
 			choice = sc.nextInt();
 			
 			switch(choice) {
 			    case 1:
-			    	BDOlogin();
+			    	BDOlogin(sc);
 			    	break;
 			    case 2:
-			    	GPMlogin();
+			    	GPMlogin(sc);
 			    	break;
 			    default:
 			    	if(choice == 0) {
@@ -29,11 +35,11 @@ public class Main {
 			    		do {
 			    			ch = sc.next();
 				    		if(ch.equalsIgnoreCase("Yes")) {
-				    			System.out.println("\nThanks, visit again\n");
+				    			System.out.println("\nThank you, visit again\n");
 				    			break;
 				    		}
 				    		else if(ch.equalsIgnoreCase("No")) {
-				    			System.out.print("\nPlease Enter valid selection for login\n");
+				    			System.out.print("\nPlease Enter valid selection for login");
 				    			choice = 3;
 				    			break;
 				    		}
@@ -50,20 +56,34 @@ public class Main {
 			    		}
 			    	}
 			    	else {
-			    		System.out.print("\nInvalid selection, please enter valid selection\n");
+			    		System.out.print("\nInvalid selection, please enter valid selection");
 			    	}
 			}
 			
 		}while(choice!=0);
 	}
 
-	private static void BDOlogin() {
-		// TODO Auto-generated method stub
-		
+	private static void BDOlogin(Scanner sc) {
+		try {
+			System.out.print("\nEnter username ");
+			String username = sc.next();
+			System.out.print("Enter password ");
+			String password = sc.next();
+			
+			BDOintr bdo = new BDOimp();
+			boolean check = bdo.login(username, password);
+			if(check == true) {
+				BDOmain.Main(sc);
+			}
+			else {
+				System.out.println("\nWrong username or password\n");
+			}
+		} catch (InputMismatchException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
-	private static void GPMlogin() {
-		// TODO Auto-generated method stub
+	private static void GPMlogin(Scanner sc) {
 		
 	}
 }
