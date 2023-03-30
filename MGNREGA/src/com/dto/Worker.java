@@ -33,19 +33,23 @@ public class Worker {
 		this.state = state;
 	}
     
-	// wName, wAadhar, wDob, wGender, gpName, gpmID, workStrDate, district, state
-	public Worker(String wName, String wAadhar, LocalDate wDob, String wGender, String gpName, int gpmID,
-			LocalDate workStrDate, String district, String state) {
+	// wName, wAadhar, wDob, wGender, gpmID
+	public Worker(String wName, String wAadhar, LocalDate wDob, String wGender) {
 		super();
 		this.wName = wName;
 		this.wAadhar = wAadhar;
 		this.wDob = wDob;
 		this.wGender = wGender;
-		this.gpName = gpName;
+	}
+	
+	public Worker(String wName, String wAadhar, LocalDate wDob, String wGender, LocalDate workStrDate) {
+		super();
+		this.wName = wName;
+		this.wAadhar = wAadhar;
+		this.wDob = wDob;
+		this.wGender = wGender;
 		this.gpmID = gpmID;
 		this.workStrDate = workStrDate;
-		this.district = district;
-		this.state = state;
 	}
 
 	public int getwID() {
