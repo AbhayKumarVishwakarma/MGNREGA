@@ -77,7 +77,7 @@ public class BDOimp implements BDOintr {
 			}
 			
 		} catch (ClassNotFoundException | SQLException e) {
-			throw new ProjectException("\nSomething went wrong!");
+			throw new ProjectException("\nSomething went wrong!\n");
 		} finally {
 			try {
 				DBUtils.closeConnection(con);

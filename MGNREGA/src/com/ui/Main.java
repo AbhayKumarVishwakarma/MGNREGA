@@ -84,6 +84,22 @@ public class Main {
 	}
 
 	private static void GPMlogin(Scanner sc) {
-		
+		try {
+			System.out.print("\nEnter email ");
+			String email = sc.next();
+			System.out.print("Enter password ");
+			String password = sc.next();
+			
+			GPMintr gpm = new GPMimp();
+			boolean check = gpm.login(email, password);
+			if(check == true) {
+				GPMmain.Main(sc);
+			}
+			else {
+				System.out.println("\nWrong username or password\n");
+			}
+		} catch (InputMismatchException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 }
