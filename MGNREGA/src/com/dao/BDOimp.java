@@ -38,7 +38,7 @@ public class BDOimp implements BDOintr {
 			ps.setInt(4, pro.getWagesParDay());
 			
 			if(ps.executeUpdate()>0) {
-				msg = "Project created successfully";
+				msg = "\nProject created successfully";
 			}
 			else {
 				throw new ProjectException("\nError while creating a new project. Try again\n");
@@ -225,6 +225,90 @@ public class BDOimp implements BDOintr {
 				throw new WorkerException("\nNo Worker available\n");
 			}
 			
+		} catch (ClassNotFoundException | SQLException e) {
+			throw new WorkerException("\nSomething went wrong!\n");
+		} finally {
+			try {
+				DBUtils.closeConnection(con);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
+
+	@Override
+	public List<Worker> showAllWorkerByGPMID(int gpmID) throws WorkerException, GPMException {
+		List<Worker> list = new ArrayList<>();
+		Connection con = null;
+		try {
+			con = DBUtils.getConnectionToDatabase();
+			// checking the gpmID 
+			PreparedStatement ps1 = con.prepareStatement("select * from GPM where gpmID = ? and is_delete = false");
+			ps1.setInt(1, gpmID);
+			ResultSet rs1 = ps1.executeQuery();
+			
+			if (rs1.next()) {
+				// Searching by GPM ID
+				PreparedStatement ps = con.prepareStatement("select * from workers where gpmID = ? and is_delete = false");
+				ps.setInt(1, gpmID);
+				ResultSet rs = ps.executeQuery();
+				
+	            boolean flag = false;
+				while (rs.next()) {
+					flag = true;
+					list.add(new Worker(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4).toLocalDate(), rs.getString(5), rs.getString(6), rs.getInt(7), rs.getInt(8), rs.getDate(9).toLocalDate(), rs.getString(10), rs.getString(11)));
+				}
+				
+				if (flag == false) {
+					throw new WorkerException("\nNo Worker available\n");
+				}
+			}
+			else {
+				throw new GPMException("\nGPM Id " + gpmID + " doesn't exist!\n");
+			}
+		} catch (ClassNotFoundException | SQLException e) {
+			throw new WorkerException("\nSomething went wrong!\n");
+		} finally {
+			try {
+				DBUtils.closeConnection(con);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
+
+	@Override
+	public List<Worker> showAllWorkerByproID(int proID) throws WorkerException, ProjectException {
+		List<Worker> list = new ArrayList<>();
+		Connection con = null;
+		try {
+			con = DBUtils.getConnectionToDatabase();
+			// checking the Project ID 
+			PreparedStatement ps1 = con.prepareStatement("select * from project where proID = ? and is_delete = false");
+			ps1.setInt(1, proID);
+			ResultSet rs1 = ps1.executeQuery();
+			
+			if (rs1.next()) {
+				// Searching by Project ID
+				PreparedStatement ps = con.prepareStatement("select * from workers where proID = ? and is_delete = false");
+				ps.setInt(1, proID);
+				ResultSet rs = ps.executeQuery();
+				
+	            boolean flag = false;
+				while (rs.next()) {
+					flag = true;
+					list.add(new Worker(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4).toLocalDate(), rs.getString(5), rs.getString(6), rs.getInt(7), rs.getInt(8), rs.getDate(9).toLocalDate(), rs.getString(10), rs.getString(11)));
+				}
+				
+				if (flag == false) {
+					throw new WorkerException("\nNo Worker available\n");
+				}
+			}
+			else {
+				throw new ProjectException("\nProject Id " + proID + " doesn't exist!\n");
+			}
 		} catch (ClassNotFoundException | SQLException e) {
 			throw new WorkerException("\nSomething went wrong!\n");
 		} finally {
