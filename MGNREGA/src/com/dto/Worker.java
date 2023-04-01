@@ -48,7 +48,6 @@ public class Worker {
 		this.wAadhar = wAadhar;
 		this.wDob = wDob;
 		this.wGender = wGender;
-		this.gpmID = gpmID;
 		this.workStrDate = workStrDate;
 	}
 

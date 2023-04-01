@@ -32,6 +32,12 @@ public interface BDOintr {
 
 	// See the details of all workers.
 	public List<Worker> showAllWorker() throws WorkerException, NoRecordFound;
+	
+	// See the details of all workers by GPM ID.
+	public List<Worker> showAllWorkerByGPMID(int gpmID) throws WorkerException, GPMException;
+	
+	// See the details of all workers by Project ID.
+	public List<Worker> showAllWorkerByproID(int gpmID) throws WorkerException, ProjectException;
 
 	// Logout
     

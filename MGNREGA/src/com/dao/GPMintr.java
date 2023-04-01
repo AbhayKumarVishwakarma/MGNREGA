@@ -33,7 +33,7 @@ public interface GPMintr {
 	public String deleteWorker(int wID) throws WorkerException;
 	
 	// no of worker in project
-	public void countNoOfWorker(int gpmID);
+	public void countNoOfWorker();
 
 	// Logout his account
 }
