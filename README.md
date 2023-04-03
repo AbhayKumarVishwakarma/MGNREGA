@@ -8,6 +8,8 @@
 
 <p>MGNREGA is a java application that helps BDO and GPM in managing projects and workers related to the Mahatma Gandhi National Rural Employment Guarantee Act. It provides an easy-to-use interface for creating, assigning, and managing data. It stores various types of data, including GPM, worker, and project records, project assignments, wage/day information, and total receivable amounts.</p>
 
+<p>It is Console based Project</p>
+
 <h1>Features</h1>
 
 ### BDO
