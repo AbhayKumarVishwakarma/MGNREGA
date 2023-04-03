@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.Utils.DBUtils;
+import com.colors.ConsoleColors;
 import com.dto.Worker;
 import com.exception.ProjectException;
 import com.exception.WorkerException;
@@ -32,10 +33,7 @@ public class GPMimp implements GPMintr {
 				flag = true;
 				GPM_ID = rs.getInt(1);
 			}
-			else {
-				System.out.println("\nWrong email or Password\n");
-			}
-			System.out.println(GPM_ID);
+			countNoOfWorker();//-----------------------------------
 			
 		} catch (ClassNotFoundException | SQLException e) {
 			System.out.println(e.getMessage());
@@ -62,25 +60,24 @@ public class GPMimp implements GPMintr {
 			String gpName = null;
 			String district = null;
 			String state = null;
-			System.out.println("-----+");
 			while(rs.next()) {
 				gpName = rs.getString(1);
 				district = rs.getString(2);
 				state = rs.getString(3);
 			}
 			
-			PreparedStatement ps1 = con.prepareStatement("insert into workers (wName, wAadhar, wDob, wGender, gpName, gpmID, district, state) values (?, ?, ?, ?, ?, ?, ?, ?)");
+			PreparedStatement ps1 = con.prepareStatement("insert into workers (wName, wAadhar, wDob, wGender, gpName, gpmID, workStrDate, district, state) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			ps1.setString(1, worker.getwName());
 			ps1.setString(2, worker.getwAadhar());
 			ps1.setDate(3, Date.valueOf(worker.getwDob()));
 			ps1.setString(4, worker.getwGender());
 			ps1.setString(5, gpName);
 			ps1.setInt(6, GPM_ID);
-			ps1.setString(7, district);
-			ps1.setString(8, state);
-			System.out.println("-----++");
+			ps1.setDate(7, Date.valueOf(worker.getWorkStrDate()));
+			ps1.setString(8, district);
+			ps1.setString(9, state);
 			if(ps1.executeUpdate()>0) {
-				msg = "\nWorker created successfully\n";
+				msg = "\nWorker created successfully";
 			}
 			else {
 				throw new WorkerException("\nError while creating new worker. Try again\n");
@@ -88,7 +85,6 @@ public class GPMimp implements GPMintr {
 			
 		} catch (ClassNotFoundException | SQLException e) {
 			throw new WorkerException("\nSomething went wrong!");
-//			throw new WorkerException(e.getMessage());
 		} finally {
 			try {
 				DBUtils.closeConnection(con);
@@ -186,6 +182,7 @@ public class GPMimp implements GPMintr {
 					ps2.setInt(2, wID);
 					
 					if(ps2.executeUpdate()>0) {
+						countNoOfWorker();
 						msg = "Project with ID: " + proID + " assigned to a worker with ID: " + wID;
 					}
 				}
@@ -220,12 +217,28 @@ public class GPMimp implements GPMintr {
             ResultSet rs = ps.executeQuery();
 			
             boolean flag = false;
-            System.out.println();
+            boolean f1 = true;
 			while(rs.next()) {
 				flag = true;
-				System.out.println(rs.getString(1) + "\t\t" + rs.getInt(2));
+				String wName = rs.getString(1);
+				int workingDay = rs.getInt(2);
+				if(workingDay < 0) workingDay = 0;
+				if(f1 == true) {
+					f1 = false;
+					
+					System.out.println(ConsoleColors.LIGHT_PINK_BACKGROUND + ConsoleColors.BLACK_BOLD + "\n      Worker & working day       " + ConsoleColors.RESET);
+					System.out.println(ConsoleColors.LIGHT_PINK +"---------------------------------"+ ConsoleColors.RESET);
+					
+					System.out.printf("%15s %26s",ConsoleColors.WHITE_BOLD_BRIGHT + "NAME", "WORKING DAY" + ConsoleColors.RESET + "\n");
+					System.out.println(ConsoleColors.LIGHT_PINK +"---------------------------------"+ ConsoleColors.RESET);
+				}
+				System.out.format("%8s %17s", wName, workingDay  + "\n");
 			}
-			System.out.println();
+			if(f1 == false) {
+				System.out.println(ConsoleColors.LIGHT_PINK +"---------------------------------"+ ConsoleColors.RESET);
+				System.out.println();
+			}
+//			System.out.println();
 			
 			if (flag == false) {
 				throw new WorkerException("\nNo worker available\n");
@@ -262,12 +275,26 @@ public class GPMimp implements GPMintr {
             ResultSet rs1 = ps1.executeQuery();
 			
             boolean flag = false;
-            System.out.println();
+			boolean f1 = true;
 			while(rs1.next()) {
 				flag = true;
-				System.out.println(rs1.getString(1) + "\t\t" + rs1.getInt(2));
+				String wName = rs1.getString(1);
+				int wage = rs1.getInt(2);
+				if(wage < 0) wage = 0;
+				if(f1 == true) {
+					f1 = false;
+					System.out.println(ConsoleColors.LIGHT_PINK_BACKGROUND + ConsoleColors.BLACK_BOLD + "\n      Worker & Wages       " + ConsoleColors.RESET);
+					System.out.println(ConsoleColors.LIGHT_PINK +"---------------------------"+ ConsoleColors.RESET);
+					
+					System.out.printf("%15s %21s",ConsoleColors.WHITE_BOLD_BRIGHT + "NAME", "WAGES" + ConsoleColors.RESET + "\n");
+					System.out.println(ConsoleColors.LIGHT_PINK +"---------------------------"+ ConsoleColors.RESET);
+				}
+				System.out.format("%8s %17s", wName, wage  + "\n");
 			}
-			System.out.println();
+			if(f1 == false) {
+				System.out.println(ConsoleColors.LIGHT_PINK +"---------------------------"+ ConsoleColors.RESET);
+				System.out.println();
+			}
 			
 			if (flag == false) {
 				throw new WorkerException("No worker available");
@@ -295,6 +322,7 @@ public class GPMimp implements GPMintr {
 			
 			if(ps.executeUpdate()>0) {
 				msg = "\nWorker ID no " + wID + " deleted\n";
+				countNoOfWorker();
 			}
 			else {
 				throw new WorkerException("\nWorker ID " + wID + " does't exist!\n");
@@ -313,8 +341,36 @@ public class GPMimp implements GPMintr {
 	}
 
 	@Override
-	public void countNoOfWorker(int gpmID) {
-		// TODO Auto-generated method stub
-		
+	public void countNoOfWorker() {
+		Connection con = null;
+		try {
+			con = DBUtils.getConnectionToDatabase();
+			PreparedStatement ps = con.prepareStatement("select proID from project where gpmID = ? and is_delete = false");
+			ps.setInt(1, GPM_ID);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+		         int proID = rs.getInt(1);
+		         PreparedStatement ps1 = con.prepareStatement("select count(wID) from workers where gpmID = ? and proID = ? and is_delete = false");
+				 ps1.setInt(1, GPM_ID);
+				 ps1.setInt(2, proID);
+				 ResultSet rs1 = ps1.executeQuery();
+				 if(rs1.next()) {
+					 int count = rs1.getInt(1);
+					 PreparedStatement ps2 = con.prepareStatement("update project set noOfWorkes = ? where proID = ?");
+					 ps2.setInt(1, count);
+					 ps2.setInt(2, proID);
+					 ps2.executeUpdate();
+				 }
+		    }
+			
+		} catch (ClassNotFoundException | SQLException e) {
+			System.out.println("Counting the worker is not working");
+		} finally {
+			try {
+				DBUtils.closeConnection(con);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
