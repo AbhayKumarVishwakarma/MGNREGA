@@ -182,6 +182,7 @@ public class GPMimp implements GPMintr {
 					ps2.setInt(2, wID);
 					
 					if(ps2.executeUpdate()>0) {
+						countNoOfWorker();
 						msg = "Project with ID: " + proID + " assigned to a worker with ID: " + wID;
 					}
 				}
@@ -349,7 +350,7 @@ public class GPMimp implements GPMintr {
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
 		         int proID = rs.getInt(1);
-		         PreparedStatement ps1 = con.prepareStatement("select count(*) from workers where gpmID = ? and proID = ? and is_delete = false");
+		         PreparedStatement ps1 = con.prepareStatement("select count(wID) from workers where gpmID = ? and proID = ? and is_delete = false");
 				 ps1.setInt(1, GPM_ID);
 				 ps1.setInt(2, proID);
 				 ResultSet rs1 = ps1.executeQuery();

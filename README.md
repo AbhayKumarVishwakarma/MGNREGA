@@ -1,6 +1,8 @@
 <h1 align="center">Mahatma Gandhi National Rural Employment Guarantee Act 2005 (MGNREGA)</h1>
+<br>
 
 <img src="MGNREGA_logo.png" alt="logo">
+<br>
 
 <h3>MGNREGA is a scheme by which unskilled people of rural India are guaranteed to have 100 days of paid work. The main objective of this project is to manage employment offered through this scheme.</h3>
 
@@ -31,3 +33,5 @@
    - MySQL
 
 <img align="center" src="image/ER_diagram.png" alt="ERD">
+
+
